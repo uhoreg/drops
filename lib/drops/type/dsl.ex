@@ -465,4 +465,8 @@ defmodule Drops.Type.DSL do
   def map(predicates) when is_list(predicates) do
     type(:map, predicates)
   end
+
+  def map({:cast, _} = cast_spec, predicates \\ []) do
+    type(cast_spec, map(predicates))
+  end
 end
