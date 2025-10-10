@@ -23,6 +23,10 @@ defmodule Drops.TypeTest do
     use Drops.Type, union([:integer, :float], gt?: 0)
   end
 
+  defmodule IntegerString do
+    use Drops.Type, cast(:string) |> integer()
+  end
+
   doctest Drops.Type
 
   describe "type registry" do

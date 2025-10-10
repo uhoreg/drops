@@ -135,6 +135,24 @@ defmodule Drops.Type do
        ]}
       iex> Enum.map(errors, &to_string/1)
       ["unit_price must be greater than 0"]
+
+  ## Casting
+
+      defmodule IntegerString do
+        use Drops.Type, cast(:string) |> integer()
+      end
+
+      iex> defmodule IntegerStringContract do
+      ...>   use Drops.Contract
+      ...>
+      ...>   schema do
+      ...>     %{
+      ...>       number: IntegerString
+      ...>     }
+      ...>   end
+      ...> end
+      iex> IntegerStringContract.conform(%{number: "1"})
+      {:ok, %{number: 1}}
   """
   @doc since: "0.2.0"
 
@@ -266,6 +284,7 @@ defmodule Drops.Type do
   def infer_primitive(map) when is_map(map), do: :map
   def infer_primitive(name) when is_atom(name), do: name
   def infer_primitive({:type, {name, _}}), do: name
+  def infer_primitive({:cast, {_input_type, output_type, _cast_opts}}), do: infer_primitive(output_type)
   def infer_primitive(_), do: nil
 
   @doc false
@@ -283,6 +302,16 @@ defmodule Drops.Type do
 
   def infer_constraints({:type, {type, []}}) do
     [predicate(:type?, [type])]
+  end
+
+  def infer_constraints({:cast, {{:type, {input_type, input_predicates}}, {:type, {output_type, output_predicates}}, cast_opts}}) do
+    {:and,
+     Enum.concat([
+       infer_constraints({:type, {input_type, input_predicates}}),
+       [{:cast, input_type, output_type, cast_opts}],
+       infer_constraints({:type, {output_type, output_predicates}})
+     ])
+    }
   end
 
   @doc false
