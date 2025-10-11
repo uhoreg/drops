@@ -146,6 +146,10 @@ defmodule Drops.Type.DSL do
     {:cast, {type(input_type), output_type, cast_opts}}
   end
 
+  def type({:cast, {input_type, output_type, cast_opts}}, more_predicates) when is_tuple(input_type) do
+    {:cast, {input_type, type(output_type, more_predicates), cast_opts}}
+  end
+
   @doc ~S"""
   Returns a union type specification.
 

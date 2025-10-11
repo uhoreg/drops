@@ -27,6 +27,10 @@ defmodule Drops.TypeTest do
     use Drops.Type, cast(:string) |> integer()
   end
 
+  defmodule IntegerOrIntegerString do
+    use Drops.Type, union([:integer, cast(:string) |> integer()])
+  end
+
   doctest Drops.Type
 
   describe "type registry" do

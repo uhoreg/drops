@@ -153,6 +153,25 @@ defmodule Drops.Type do
       ...> end
       iex> IntegerStringContract.conform(%{number: "1"})
       {:ok, %{number: 1}}
+
+      defmodule IntegerOrIntegerString do
+        use Drops.Type, union([:integer, cast(:string) |> integer()])
+      end
+
+      iex> defmodule IntegerOrIntegerStringContract do
+      ...>   use Drops.Contract
+      ...>
+      ...>   schema do
+      ...>     %{
+      ...>       number: IntegerOrIntegerString,
+      ...>     }
+      ...>   end
+      ...> end
+      iex> IntegerOrIntegerStringContract.conform(%{number: "1"})
+      {:ok, %{number: 1}}
+      iex> IntegerOrIntegerStringContract.conform(%{number: 1})
+      {:ok, %{number: 1}}
+
   """
   @doc since: "0.2.0"
 
