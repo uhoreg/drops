@@ -26,6 +26,20 @@ defmodule Drops.Predicates.Helpers do
     end
   end
 
+  def apply_predicate({:cast, input_type, output_type, cast_opts}, {:ok, value}) do
+    caster = cast_opts[:caster] || Drops.Casters
+
+    try do
+      casted_value =
+        apply(caster, :cast, [input_type, output_type, value] ++ cast_opts)
+
+      {:ok, casted_value}
+
+    rescue
+      exception -> {:error, [input: value, predicate: :cast, args: [Exception.message(exception)]]}
+    end
+  end
+
   def apply_predicate(_, {:error, _} = error) do
     error
   end
