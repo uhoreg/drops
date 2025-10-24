@@ -35,6 +35,7 @@ defmodule Drops.Validator.Messages.DefaultBackend do
     excludes?: "must exclude %input%",
     in?: "must be one of: %input%",
     not_in?: "must not be one of: %input%",
+    is_struct?: "must be a struct of type %input%",
 
     # built-in types
     number: "must be a number",

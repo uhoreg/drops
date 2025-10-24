@@ -727,4 +727,21 @@ defmodule Drops.PredicatesTest do
       )
     end
   end
+
+  describe "is_struct?/2 with :map" do
+    contract do
+      schema do
+        %{required(:test) => type(:map, is_struct?: URI)}
+      end
+    end
+
+    test "returns success with a URI", %{contract: contract} do
+      assert {:ok, %{test: %URI{}}} = contract.conform(%{test: URI.parse("/")})
+    end
+
+    test "returns error with a non-URI", %{contract: contract} do
+      assert_errors(["test must be a struct of type Elixir.URI"], contract.conform(%{test: %{a: %{}}}))
+    end
+  end
+
 end
