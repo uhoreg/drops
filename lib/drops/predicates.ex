@@ -395,4 +395,17 @@ defmodule Drops.Predicates do
   """
   @spec not_in?(list :: list(), input :: any()) :: boolean()
   def not_in?(list, input) when is_list(list), do: input not in list
+
+  @doc ~S"""
+  Check if a given input is a struct of a given type
+
+  ## Examples
+
+      iex> Drops.Predicates.is_struct?(URI, URI.parse("/"))
+      true
+      iex> Drops.Predicates.is_struct?(URI, %{})
+      false
+  """
+  @spec is_struct?(struct :: atom(), input :: map()) :: boolean()
+  def is_struct?(struct, input) when is_atom(struct) and is_map(input), do: is_struct(input, struct)
 end
