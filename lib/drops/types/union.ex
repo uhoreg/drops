@@ -108,8 +108,13 @@ defmodule Drops.Types.Union do
       end
 
       defp constrain(type, predicates) do
+        constraints =
+          case type.constraints do
+            {:and, constraints} -> {:and, constraints ++ infer_constraints(predicates)}
+            constraints when is_list(constraints) -> constraints ++ infer_constraints(predicates)
+          end
         Map.merge(type, %{
-          constraints: type.constraints ++ infer_constraints(predicates)
+          constraints: constraints
         })
       end
     end
