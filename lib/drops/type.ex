@@ -246,10 +246,11 @@ defmodule Drops.Type do
         )
       end
 
-      def new(spec, constraints) when is_list(constraints) do
-        new(
-          primitive: infer_primitive(spec),
-          constraints: infer_constraints({:type, {spec, constraints}})
+      def new(predicates, opts) when is_list(opts) do
+        type = new(opts)
+        Elixir.Map.merge(
+          type,
+          %{constraints: type.constraints ++ Drops.Type.infer_constraints(predicates)}
         )
       end
 
