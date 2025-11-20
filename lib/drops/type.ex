@@ -248,9 +248,14 @@ defmodule Drops.Type do
 
       def new(predicates, opts) when is_list(opts) do
         type = new(opts)
+        constraints =
+          case type.constraints do
+            {:and, constraints} -> {:and, constraints ++ infer_constraints(predicates)}
+            constraints when is_list(constraints) -> constraints ++ infer_constraints(predicates)
+          end
         Elixir.Map.merge(
           type,
-          %{constraints: type.constraints ++ Drops.Type.infer_constraints(predicates)}
+          %{constraints: constraints}
         )
       end
 
