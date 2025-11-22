@@ -107,6 +107,13 @@ defmodule Drops.Types.Union do
         })
       end
 
+      defp constrain(%Drops.Types.Union{left: left, right: right} = type, predicates) do
+        Map.merge(type, %{
+          left: constrain(left, predicates),
+          right: constrain(right, predicates)
+        })
+      end
+
       defp constrain(type, predicates) do
         constraints =
           case type.constraints do
