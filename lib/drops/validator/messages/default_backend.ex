@@ -36,6 +36,8 @@ defmodule Drops.Validator.Messages.DefaultBackend do
     in?: "must be one of: %input%",
     not_in?: "must not be one of: %input%",
     is_struct?: "must be a struct of type %input%",
+    keys: "must have keys of the right type",
+    values: "must have values of the right type",
 
     # built-in types
     number: "must be a number",
@@ -77,6 +79,16 @@ defmodule Drops.Validator.Messages.DefaultBackend do
   @impl true
   def text(:not_in?, values, _input) do
     String.replace(@text_mapping[:not_in?], "%input%", Enum.join(values, ", "))
+  end
+
+  @impl true
+  def text(:keys, _values, _input) do
+    @text_mapping[:keys]
+  end
+
+  @impl true
+  def text(:values, _values, _input) do
+    @text_mapping[:values]
   end
 
   @impl true
