@@ -408,4 +408,40 @@ defmodule Drops.Predicates do
   """
   @spec is_struct?(struct :: atom(), input :: map()) :: boolean()
   def is_struct?(struct, input) when is_atom(struct) and is_map(input), do: is_struct(input, struct)
+
+  @doc ~S"""
+  Checks if that the keys of a given map match a given type
+
+  ## Examples
+
+      iex> Drops.Predicates.keys(:string, %{"a" => "b", "c" => "d"})
+      true
+      iex> Drops.Predicates.keys(:string, %{"a" => "b", 1 => "d"})
+      false
+  """
+  @spec keys(key_type :: any(), input :: map()) :: boolean()
+  def keys(key_type, input) when is_map(input) do
+    key_type = Drops.Type.Compiler.visit(key_type, [])
+    Enum.all?(input, fn {key, _} ->
+      Kernel.match?({:ok, _}, Drops.Type.Validator.validate(key_type, key))
+    end)
+  end
+
+  @doc ~S"""
+  Checks if that the values of a given map match a given type
+
+  ## Examples
+
+      iex> Drops.Predicates.values(:string, %{"a" => "b", "c" => "d"})
+      true
+      iex> Drops.Predicates.values(:string, %{"a" => "b", "c" => 4})
+      false
+  """
+  @spec values(value_type :: any(), input :: map()) :: boolean()
+  def values(value_type, input) when is_map(input) do
+    value_type = Drops.Type.Compiler.visit(value_type, [])
+    Enum.all?(input, fn {_, value} ->
+      Kernel.match?({:ok, _}, Drops.Type.Validator.validate(value_type, value))
+    end)
+  end
 end
