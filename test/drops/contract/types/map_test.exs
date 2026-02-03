@@ -57,42 +57,42 @@ defmodule Drops.Contract.Types.MapTest do
 
     test "returns error with non-string => string", %{contract: contract} do
       assert_errors(
-        ["string_to_string must have keys of the right type"],
+        ["string_to_string.1 must be a string"],
         contract.conform(%{string_to_string: %{1 => "foo"}})
       )
     end
 
     test "returns error with string => non-string", %{contract: contract} do
       assert_errors(
-        ["string_to_string must have values of the right type"],
+        ["string_to_string.foo must be a string"],
         contract.conform(%{string_to_string: %{"foo" => true}})
       )
     end
 
     test "returns error with odd integer => string", %{contract: contract} do
       assert_errors(
-        ["even_integer_to_filled_string must have keys of the right type"],
+        ["even_integer_to_filled_string.1 must be even"],
         contract.conform(%{even_integer_to_filled_string: %{1 => "foo"}})
       )
     end
 
     test "returns error with even integer => empty string", %{contract: contract} do
       assert_errors(
-        ["even_integer_to_filled_string must have values of the right type"],
+        ["even_integer_to_filled_string.2 must be filled"],
         contract.conform(%{even_integer_to_filled_string: %{2 => ""}})
       )
     end
 
     test "returns error with string => non-map", %{contract: contract} do
       assert_errors(
-        ["nested_map must have values of the right type"],
+        ["nested_map.Hello must be a map"],
         contract.conform(%{nested_map: %{"Hello" => "World!"}})
       )
     end
 
     test "returns error with string => map with wrong types", %{contract: contract} do
       assert_errors(
-        ["nested_map must have values of the right type"],
+        ["nested_map.parent.child must be a list"],
         contract.conform(%{nested_map: %{"parent" => %{"child" => "grandchild"}}})
       )
     end
